@@ -1,61 +1,55 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Sat Oct 24 17:44:59 2020
-
-@author: ASUS
-"""
-
+import os
 import qrcode
 from PIL import Image as imagen, ImageTk as imagenTk
+from pyzbar.pyzbar import decode
 from tkinter import *
 from tkinter import messagebox
 from tkinter import ttk
 from tkinter.filedialog import askopenfilename
+from tkinter.filedialog import askdirectory
 
-correctionDict = {'L7%': qrcode.constants.ERROR_CORRECT_L, 'M15%': qrcode.constants.ERROR_CORRECT_M, 'Q25%': qrcode.constants.ERROR_CORRECT_Q, 'H30%': qrcode.constants.ERROR_CORRECT_H}
-elegirColor = {'Blanco&Negro':['white','black'], 'Blanco&Azul':['white','blue'] , 'Blanco&Rojo':['white','red'], 'Negro&Amarillo':['yellow','black'], 'Amarillo&Azul':['yellow','blue'], 'Amarillo&Rojo':['yellow','red'], 'Blanco&Verde':['white','green'], 'Amarillo&Verde':['yellow','green']}
+PNG = ".png"
+correctionDict = {
+    'L7%': qrcode.constants.ERROR_CORRECT_L, 
+    'M15%': qrcode.constants.ERROR_CORRECT_M, 
+    'Q25%': qrcode.constants.ERROR_CORRECT_Q, 
+    'H30%': qrcode.constants.ERROR_CORRECT_H}
+elegirColor = {
+    'Blanco&Negro':['white','black'], 
+    'Blanco&Azul':['white','blue'] , 
+    'Blanco&Rojo':['white','red'], 
+    'Negro&Amarillo':['yellow','black'], 
+    'Amarillo&Azul':['yellow','blue'], 
+    'Amarillo&Rojo':['yellow','red'], 
+    'Blanco&Verde':['white','green'], 
+    'Amarillo&Verde':['yellow','green']}
+directorio = ''
+ruta = 'qrcode.png'
 
 root= Tk()
 root.title('Codificador y decodificador de QR')
+
 
 #----------------imagen al inicio------------------
 
 miFrame1=Frame(root)
 miFrame1.pack()
 
-qr = qrcode.QRCode(
-    version=1,
-    error_correction=qrcode.constants.ERROR_CORRECT_L, #Porcentaje de error L 7%, M 15%, Q 25%, H 30%
-    box_size=5, #Se elige el tamaño del array o pixeles por fila y columna
-    border=4, #Se elige el tamaño entre el borde de la ventana y el codigo QR generado
-)
-    
-qr.add_data("testing 123@789?") #https://medium.com/@ngwaifoong92
-qr.make(fit=True)
-    
-#img = qr.make_image(fill_color=color1, back_color=color2)
-imag = qr.make_image(fill_color="red", back_color="white")
-imag.save("qrcode.png")
 
-miImagen= imagen.open("/home/alex/Documents/ws-sts/Bitbucket/qr-app/qrcode.png")
-miImagen = miImagen.resize((150,150), imagen.ANTIALIAS)
-miFoto = imagenTk.PhotoImage(miImagen)
-        
-foto = Label(miFrame1, image=miFoto)
-foto.grid(row=0, column=0,padx=10,pady=10)
-'''
+#----------------comienzo de funciones------------------
 def crearImagenArchivo(nombreArchivoQR):
+    global miImagen
+    global miFoto
+    global foto
+    
     miImagen= imagen.open(nombreArchivoQR) #"C:/Users/ASUS/Downloads/qrcode.png"
     miImagen = miImagen.resize((150,150), imagen.ANTIALIAS)
     miFoto = imagenTk.PhotoImage(miImagen)
             
     foto = Label(miFrame1, image=miFoto)
-    foto.grid(row=0, column=0,padx=10,pady=10)
-    
-crearImagenArchivo("C:/Users/ASUS/Downloads/qrcode.png")
-'''
+    foto.grid(row=0, column=0,padx=10,pady=10) #place(x=0, y=0, relwidth=1, relheight=1) #pack  
 
-#----------------comienzo de funciones------------------
 def crearQRConEntradas(nombreArchivoQR, mensaje, capacidadDatos, nivelCorreccion, cambiarColor1, cambiarColor2):
     qr = qrcode.QRCode(
         version=capacidadDatos,
@@ -67,22 +61,10 @@ def crearQRConEntradas(nombreArchivoQR, mensaje, capacidadDatos, nivelCorreccion
     qr.add_data(mensaje) #https://medium.com/@ngwaifoong92
     qr.make(fit=True)
     
-    #img = qr.make_image(fill_color=color1, back_color=color2)
     imag = qr.make_image(fill_color=cambiarColor1, back_color=cambiarColor2)
-    imag.save(nombreArchivoQR)
+    imag.save(ruta)
 
-'''
-def CrearArchivoImagen(nombreArchivoQR):
-    print('crear archivo imagen {}', nombreArchivoQR)
-    miImagen= imagen.open(nombreArchivoQR + ".png")
-    miImagen = miImagen.resize((150,150), imagen.ANTIALIAS)
-    miFoto = imagenTk.PhotoImage(miImagen)
-    
-    foto = Label(miFrame1, image=miFoto)
-    foto.grid(row=0, column=0,padx=10,pady=10)
-'''
 def salirAplicacion():
-    #valor = messagebox.askquestion("Salir", "¿Deseas salir de la aplicación?") devuelve yes or no
     valor = messagebox.askokcancel("Salir", "¿Deseas salir de la aplicación?") #devuelve True or False
     if valor== True:
         root.destroy()
@@ -94,41 +76,51 @@ def avisoLicencia():
     messagebox.showwarning("Licencia","producto bajo licencia GNU - Software libre")
    
 def verificar(entrada, valor):
-    if entrada == "":
+    if entrada == "" or entrada.strip() == "":
         return valor
     else:
         return entrada
         
-
 def crearQR():
+    global directorio
+    global ruta
+    directorio = seleccionar_directorio()
     nombreArchivoQR = verificar(NombreArchivo.get(), "qrcode.png")
     mensaje = verificar(mensajeText.get('1.0', END), "testing 123@789?")
     capacidadDatos = verificar(capacidadDatosCombo.get(), "1")
     nivelCorreccion = verificar(nivelCorreccionCombo.get(), "L7%")
     cambiarColor = verificar(cambiarColorCombo.get(), "Blanco&Negro")
+    if PNG in nombreArchivoQR:
+        ruta = directorio + nombreArchivoQR
+    else:
+        ruta = directorio + nombreArchivoQR  + PNG
     
-    crearQRConEntradas(nombreArchivoQR, mensaje, capacidadDatos, correctionDict[nivelCorreccion],elegirColor[cambiarColor][0], elegirColor[cambiarColor][1])
-    #CrearArchivoImagen(nombreArchivoQR)
+    crearQRConEntradas(ruta, mensaje, capacidadDatos, correctionDict[nivelCorreccion],elegirColor[cambiarColor][1], elegirColor[cambiarColor][0])
+    crearImagenArchivo(ruta)
     
-    messagebox.showinfo("Registro QR", "Registro insertado con éxito")
+    messagebox.showinfo("Registro QR", "QR generado con éxito: " + ruta)
+
+def seleccionar_directorio():
+    tmpDir = askdirectory()
+    if tmpDir:
+        return tmpDir + os.path.sep
+    else:
+        return ''
     
 def cargarArchivoQR():
-    #Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
-    filename = askopenfilename() # show an "Open" dialog box and return the path to the selected file
+    global filename
+    global ruta
     
-    miImagen2= imagen.open("C:/Users/ASUS/Downloads/qrcode.png")
-    miImagen2 = miImagen2.resize((150,150), imagen.ANTIALIAS)
-    im = imagenTk.PhotoImage(miImagen2)
-    #im = img.imread("qrcode.png")
-    foto2 = Label(miFrame5, image=im)
-    foto2.grid(row=0, column=0,padx=10,pady=10)
-
-    messagebox.showinfo("Registro QR", "Archivo cargado con éxito: " + filename)
-    plt.imshow(im)
+    #Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
+    filename = askopenfilename(filetypes=(('imagenes', '*.png'),('todos','*.*'))) # show an "Open" dialog box and return the path to the selected file
+    ruta=filename
+    if ruta:
+        crearImagenArchivo(ruta)
+        messagebox.showinfo("Registro QR", "Archivo cargado con éxito: " + filename)
 
 def leerQR():
     
-    imag = imagen.open('qrcode.png')
+    imag = imagen.open(ruta)
     result = decode(imag)
     decoded = ''
     for i in result:
@@ -136,13 +128,7 @@ def leerQR():
     
     textoComentario2.delete(1.0, END)
     textoComentario2.insert(1.0, decoded)
-
-
-#----------------Valores iniciales------------------
-
-
-crearQRConEntradas("qrcode", "testing 123@789?", 1, qrcode.constants.ERROR_CORRECT_L,'black','white')
-#CrearArchivoImagen("qrcode")
+    messagebox.showinfo("Registro QR", "Archivo leido con éxito: " + ruta)
 
 
 #----------------comienzo barra Menu------------------
@@ -150,15 +136,15 @@ crearQRConEntradas("qrcode", "testing 123@789?", 1, qrcode.constants.ERROR_CORRE
 barraMenu=Menu(root)
 root.config(menu=barraMenu, width=300,height=300)
 
-archivoBBDD=Menu(barraMenu, tearoff=0)
-archivoBBDD.add_command(label="Salir", command=salirAplicacion)
+menuSalir=Menu(barraMenu, tearoff=0)
+menuSalir.add_command(label="Salir", command=salirAplicacion)
 
-archivoAyuda=Menu(barraMenu, tearoff=0)
-archivoAyuda.add_command(label="Licencia", command=avisoLicencia)
-archivoAyuda.add_command(label="Acerca de...", command=infoAdicional)
+menuAyuda=Menu(barraMenu, tearoff=0)
+menuAyuda.add_command(label="Licencia", command=avisoLicencia)
+menuAyuda.add_command(label="Acerca de...", command=infoAdicional)
 
-barraMenu.add_cascade(label="File",menu=archivoBBDD)
-barraMenu.add_cascade(label="Ayuda",menu=archivoAyuda)
+barraMenu.add_cascade(label="File",menu=menuSalir)
+barraMenu.add_cascade(label="Ayuda",menu=menuAyuda)
 
 
 #----------------comienzo de campos------------------
@@ -177,20 +163,20 @@ scrollVert=Scrollbar(miFrame2, command=mensajeText.yview)
 scrollVert.grid(row=0, column=2, sticky="nsew")
 mensajeText.config(yscrollcommand=scrollVert.set)
 
-capacidadDatosCombo = ttk.Combobox(miFrame2, width=16)
-capacidadDatosCombo.grid(row=1, column=1,padx=10,pady=10)
 opciones2 = [i for i in range(1, 41)]
-capacidadDatosCombo['values']=opciones2
+capacidadDatosCombo = ttk.Combobox(miFrame2, width=16, state='readonly', values = opciones2)
+capacidadDatosCombo.grid(row=1, column=1,padx=10,pady=10)
+capacidadDatosCombo.current(0)
 
-nivelCorreccionCombo= ttk.Combobox(miFrame2, width=16)
-nivelCorreccionCombo.grid(row=2, column=1,padx=10,pady=10)
 opciones = ['L7%', 'M15%', 'Q25%', 'H30%']
-nivelCorreccionCombo['values']=opciones
+nivelCorreccionCombo= ttk.Combobox(miFrame2, width=16, state='readonly', values= opciones)
+nivelCorreccionCombo.grid(row=2, column=1,padx=10,pady=10)
+nivelCorreccionCombo.current(0)
 
-cambiarColorCombo= ttk.Combobox(miFrame2, width=16)
-cambiarColorCombo.grid(row=3, column=1,padx=10,pady=10)
 opciones3 = ['Blanco&Negro', 'Blanco&Azul', 'Blanco&Rojo', 'Negro&Amarillo', 'Amarillo&Azul', 'Amarillo&Rojo', 'Blanco&Verde', 'Amarillo&Verde']
-cambiarColorCombo['values']=opciones3
+cambiarColorCombo= ttk.Combobox(miFrame2, width=16, state='readonly', values = opciones3)
+cambiarColorCombo.grid(row=3, column=1,padx=10,pady=10)
+cambiarColorCombo.current(0)
 
 nombreArchivoEntry=Entry(miFrame2, textvariable=NombreArchivo)
 nombreArchivoEntry.grid(row=4, column=1,padx=10,pady=10)
@@ -198,20 +184,20 @@ nombreArchivoEntry.grid(row=4, column=1,padx=10,pady=10)
 
 #----------------columna 1------------------
 
-comentarioLabel=Label(miFrame2, text="Mensaje: ")
-comentarioLabel.grid(row=0, column=0, sticky="e",padx=10,pady=10)
-
-erroresLabel=Label(miFrame2, text="Nivel de correción de errores: ")
-erroresLabel.grid(row=2, column=0, sticky="e",padx=10,pady=10)
+mensajeLabel=Label(miFrame2, text="Mensaje: ")
+mensajeLabel.grid(row=0, column=0, sticky="e",padx=10,pady=10)
 
 capacidadLabel=Label(miFrame2, text="Conf capacidad de datos: ")
 capacidadLabel.grid(row=1, column=0, sticky="e",padx=10,pady=10)
 
+nivelCorreccionLabel=Label(miFrame2, text="Nivel de correción de errores: ")
+nivelCorreccionLabel.grid(row=2, column=0, sticky="e",padx=10,pady=10)
+
 colorLabel=Label(miFrame2, text="Cambiar colores QR: ")
 colorLabel.grid(row=3, column=0, sticky="e",padx=10,pady=10)
 
-idLabel=Label(miFrame2, text="Nombre Archivo: ")
-idLabel.grid(row=4, column=0, sticky="e",padx=10,pady=10)
+nombreArchivoLabel=Label(miFrame2, text="Nombre Archivo: ")
+nombreArchivoLabel.grid(row=4, column=0, sticky="e",padx=10,pady=10)
 
 
 #----------------botones al final------------------
@@ -238,5 +224,10 @@ scrollVert=Scrollbar(miFrame4, command=textoComentario2.yview)
 scrollVert.grid(row=0, column=2, sticky="nsew")
 textoComentario2.config(yscrollcommand=scrollVert.set)
 
+
+#----------------Valores iniciales------------------
+
+crearQRConEntradas(ruta, "testing 123@789?", 1, qrcode.constants.ERROR_CORRECT_L,'black','white')
+crearImagenArchivo(ruta)
 
 root.mainloop()
