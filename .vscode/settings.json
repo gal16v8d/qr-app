@@ -1,4 +1,5 @@
 {
+    "python.pythonPath": "${workspaceFolder}/.venv",
     "python.linting.pylintEnabled": true,
     "python.linting.enabled": true,
     "python.linting.pycodestyleEnabled": true,

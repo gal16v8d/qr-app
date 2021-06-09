@@ -9,6 +9,7 @@ from tkinter import ttk
 from tkinter.filedialog import askopenfilename
 from tkinter.filedialog import askdirectory
 
+
 PNG = ".png"
 correction_dict = {
     'L7%': qrcode.constants.ERROR_CORRECT_L,
