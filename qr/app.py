@@ -58,9 +58,13 @@ def create_qr(file_name, msg, data_capacity, correct_lvl,
               selected_color, selected_color_2):
     qr = qrcode.QRCode(
         version=data_capacity,
-        error_correction=correct_lvl,  # Porcentaje de error L 7%, M 15%, Q 25%, H 30%
-        box_size=5,  # Se elige el tamaño del array o pixeles por fila y columna
-        border=4,  # Se elige el tamaño entre el borde de la ventana y el codigo QR generado
+        # Porcentaje de error L 7%, M 15%, Q 25%, H 30%
+        error_correction=correct_lvl,
+        # Se elige el tamaño del array o pixeles por fila y columna
+        box_size=5,
+        # Se elige el tamaño entre el borde de la ventana
+        # y el codigo QR generado
+        border=4,
     )
 
     qr.add_data(msg)  # https://medium.com/@ngwaifoong92
@@ -109,7 +113,9 @@ def qr_create():
         FILE_NAME = OUTPUT_DIR + qr_file_name + PNG
 
     create_qr(FILE_NAME, msg, data_capacity,
-              correction_dict[correct_lvl], color_choose[new_color][1], color_choose[new_color][0])
+              correction_dict[correct_lvl],
+              color_choose[new_color][1],
+              color_choose[new_color][0])
     create_qr_image(FILE_NAME)
 
     messagebox.showinfo("Registro QR", "QR generado con éxito: " + FILE_NAME)
@@ -126,7 +132,9 @@ def select_dir():
 def load_qr_file():
     global FILE_NAME
 
-    # Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
+    # Tk().withdraw()
+    # we don't want a full GUI, so keep the root
+    # window from appearing
     # show an "Open" dialog box and return the path to the selected file
     tmp_file_name = askopenfilename(filetypes=(
         ('imagenes', '*.png'), ('todos', '*.*')))
@@ -193,8 +201,10 @@ correct_lvl_dd = ttk.Combobox(
 correct_lvl_dd.grid(row=2, column=1, padx=10, pady=10)
 correct_lvl_dd.current(0)
 
-color_change_opt = ['Blanco&Negro', 'Blanco&Azul', 'Blanco&Rojo', 'Negro&Amarillo',
-                    'Amarillo&Azul', 'Amarillo&Rojo', 'Blanco&Verde', 'Amarillo&Verde']
+color_change_opt = ['Blanco&Negro', 'Blanco&Azul',
+                    'Blanco&Rojo', 'Negro&Amarillo',
+                    'Amarillo&Azul', 'Amarillo&Rojo',
+                    'Blanco&Verde', 'Amarillo&Verde']
 color_change_dd = ttk.Combobox(
     frame_2, width=16, state='readonly', values=color_change_opt)
 color_change_dd.grid(row=3, column=1, padx=10, pady=10)

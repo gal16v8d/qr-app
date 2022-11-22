@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "${workspaceFolder}/.venv",
+    "python.analysis.extraPaths": ["${workspaceFolder}/.venv/lib"],
     "python.linting.pylintEnabled": true,
     "python.linting.enabled": true,
     "python.linting.pycodestyleEnabled": true,

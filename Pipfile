@@ -7,11 +7,11 @@ name = "pypi"
 Pillow = "*"
 pyzbar = "*"
 qrcode = "*"
+
+[dev-packages]
 pylint = "*"
 pep8 = "*"
 autopep8 = "*"
-
-[dev-packages]
 
 [requires]
 python_version = "3.10"
