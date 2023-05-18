@@ -1,51 +1,78 @@
 # qr-app
 
+Generates a qr based on an user input
+
 # Get started
 
 ## Unix
 
-sudo apt install python3-venv
-Install python3 tkinter for UI:
-sudo apt install python3-tk
-Install libzbar0 for decoding:
-sudo apt install libzbar0
 Install pipenv:
+
+```bash
+sudo apt install python3-venv
 pip3 install pipenv
+```
+
+Install python3 tkinter for UI:
+
+```bash
+sudo apt install python3-tk
+```
+
+Install libzbar0 for decoding:
+
+```bash
+sudo apt install libzbar0
+```
+
 Then create the folder for allocate the virtual environment:
+
+```bash
 mkdir .venv
+```
+
 Launch pipenv:
-pipenv install --skip-lock
+
+```bash
+pipenv install
+```
+
 Then activate the virtual env:
+
+```bash
 pipenv shell
+```
+
 Run command inside virtualenv:
+
+```bash
 pipenv run
+```
+
 Exit virtual env:
-exit or deactivate
 
-## Windows
+```bash
+exit
+```
 
-Update pip:
-py -m pip install --upgrade pip
-Install python3-venv:
-py -m pip install virtualenv
-Then create the folder for allocate the virtual environment:
-py -m virtualenv env
-Then activate the virtual env:
-Set-ExecutionPolicy Unrestricted -Scope Process (run if UnauthorizedAccess in powershell console)
-.\venv\Scripts\activate.ps1
-Now you can install python libs as you need it
+or
+
+```bash
+deactivate
+```
 
 # set up
 
 For generate requirements.txt file please execute:
+
+```bash
 pip3 freeze > requirements.txt
+```
 
 # launch
 
 ## Unix
 
+```bash
 python3 qr/app.py
-
-## Windows
-
-py qr/app.py
+```

@@ -32,19 +32,19 @@ root = Tk()
 root.title('Codificador y decodificador de QR')
 
 
-# ----------------imagen al inicio------------------
+# ---------------- Star Image ------------------
 
 frame_1 = Frame(root)
 frame_1.pack()
 
 
-# ----------------comienzo de funciones------------------
+# ---------------- Init func ------------------
 def create_qr_image(qr_file_name):
     global selected_image
     global photo_image
     global photo
 
-    # "C:/Users/ASUS/Downloads/qrcode.png"
+    # output path ie "C:/Users/User_Name/Downloads/qrcode.png"
     selected_image = imagen.open(qr_file_name)
     selected_image = selected_image.resize((150, 150), imagen.ANTIALIAS)
     photo_image = imagenTk.PhotoImage(selected_image)
@@ -77,7 +77,7 @@ def create_qr(file_name, msg, data_capacity, correct_lvl,
 
 def exit_app():
     value = messagebox.askokcancel(
-        "Salir", "¿Deseas salir de la aplicación?")  # devuelve True or False
+        "Salir", "¿Deseas salir de la aplicación?")  # True or False
     if value is True:
         root.destroy()
 
@@ -157,7 +157,7 @@ def qr_read():
     messagebox.showinfo("Registro QR", "Archivo leido con éxito: " + FILE_NAME)
 
 
-# ----------------comienzo barra Menu------------------
+# ---------------- Menu bar ------------------
 
 bar_menu = Menu(root)
 root.config(menu=bar_menu, width=300, height=300)
@@ -173,7 +173,7 @@ bar_menu.add_cascade(label="File", menu=exit_menu)
 bar_menu.add_cascade(label="Ayuda", menu=help_menu)
 
 
-# ----------------comienzo de campos------------------
+# ---------------- Init fields ------------------
 
 frame_2 = Frame()
 frame_2.pack()
@@ -181,7 +181,7 @@ frame_2.pack()
 file_name_var = StringVar()
 
 
-# ----------------columna 2------------------
+# ---------------- second column ------------------
 
 txt_msg = Text(frame_2, width=16, height=5)
 txt_msg.grid(row=0, column=1, padx=10, pady=10)
@@ -214,7 +214,7 @@ file_name_entry = Entry(frame_2, textvariable=file_name_var)
 file_name_entry.grid(row=4, column=1, padx=10, pady=10)
 
 
-# ----------------columna 1------------------
+# ---------------- first column ------------------
 
 msg_label = Label(frame_2, text="Mensaje: ")
 msg_label.grid(row=0, column=0, sticky="e", padx=10, pady=10)
@@ -232,7 +232,7 @@ file_name_label = Label(frame_2, text="Nombre Archivo: ")
 file_name_label.grid(row=4, column=0, sticky="e", padx=10, pady=10)
 
 
-# ----------------botones al final------------------
+# ---------------- Bottom buttons ------------------
 
 frame_3 = Frame(root)
 frame_3.pack()
@@ -248,7 +248,7 @@ decypher_button = Button(frame_3, text="Leer QR",
 decypher_button.grid(row=0, column=2, padx=10, pady=10)
 
 
-# ----------------lectura mensaje------------------
+# ---------------- Read Msg ------------------
 
 frame_4 = Frame()
 frame_4.pack()
@@ -260,7 +260,7 @@ y_scroll.grid(row=0, column=2, sticky="nsew")
 txt_comment.config(yscrollcommand=y_scroll.set)
 
 
-# ----------------Valores iniciales------------------
+# ---------------- Init Values ------------------
 
 create_qr(FILE_NAME, "testing 123@789?", 1,
           qrcode.constants.ERROR_CORRECT_L, 'black', 'white')
