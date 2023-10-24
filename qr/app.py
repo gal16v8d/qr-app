@@ -46,7 +46,7 @@ def create_qr_image(qr_file_name):
 
     # output path ie "C:/Users/User_Name/Downloads/qrcode.png"
     selected_image = imagen.open(qr_file_name)
-    selected_image = selected_image.resize((150, 150), imagen.ANTIALIAS)
+    selected_image = selected_image.resize((150, 150), imagen.ADAPTIVE)
     photo_image = imagenTk.PhotoImage(selected_image)
 
     photo = Label(frame_1, image=photo_image)
