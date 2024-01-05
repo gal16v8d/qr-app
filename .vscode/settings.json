@@ -1,5 +1,9 @@
 {
     "python.analysis.extraPaths": ["${workspaceFolder}/.venv/lib"],
+    "pylint.ignorePatterns": [
+        ".vscode/*.py",
+        "**/site-packages/**/*.py"
+    ],
     "python.linting.pylintEnabled": true,
     "python.linting.enabled": true,
     "python.linting.pycodestyleEnabled": true,

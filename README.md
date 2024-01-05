@@ -6,47 +6,56 @@ Generates a qr based on an user input
 
 ## Unix
 
-Install pipenv:
-
-```bash
-sudo apt install python3-venv
-pip3 install pipenv
-```
-
-Install python3 tkinter for UI:
-
-```bash
-sudo apt install python3-tk
-```
-
 Install libzbar0 for decoding:
 
 ```bash
 sudo apt install libzbar0
 ```
 
-Then create the folder for allocate the virtual environment:
+Install poetry:
+
+```bash
+curl -sSL https://install.python-poetry.org | python3 -
+```
+
+Init repo:
+
+```bash
+poetry new candc-svc
+```
+
+Create the virtual env folder:
 
 ```bash
 mkdir .venv
 ```
 
-Launch pipenv:
+Install all the dependencies in the project (clean-state):
 
 ```bash
-pipenv install
+poetry install
 ```
 
-Then activate the virtual env:
+Install any dependency you need:
 
 ```bash
-pipenv shell
+poetry add lib_here
 ```
 
-Run command inside virtualenv:
+Remove a dependency you don't need:
 
 ```bash
-pipenv run
+poetry remove lib_here
+```
+
+# Set up
+
+# env
+
+Activate using the command:
+
+```bash
+source .venv/bin/activate
 ```
 
 Exit virtual env:
@@ -61,7 +70,32 @@ or
 deactivate
 ```
 
-# set up
+# Advanced use cases
+
+If multiple python versions are found in the operative system, then
+
+- use pyenv to handle the versions
+- if needed set the local python for this project, like
+
+```bash
+pyenv local 3.12.1
+```
+
+- you can confirm all good by checking
+
+```bash
+pyenv which python
+```
+
+- set the specific python version like
+
+```bash
+poetry env use $USER_HOME/.pyenv/versions/3.12.1/bin/python
+```
+
+- then install using commands like the ones in the previous section
+
+# check
 
 For generate requirements.txt file please execute:
 
