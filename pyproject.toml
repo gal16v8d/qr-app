@@ -6,16 +6,15 @@ authors = ["gal16v8d"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = "^3.13"
 tk = "^0.1.0"
 pyzbar = "^0.1.9"
 qrcode = "^7.4.2"
-pillow = "^10.3.0"
+pillow = "^10.4.0"
 
 [tool.poetry.group.dev.dependencies]
-pylint = "^3.0.3"
-pep8 = "^1.7.1"
-autopep8 = "^2.0.4"
+pylint = "^3.3.7"
+black = "^25.1.0"
 
 [build-system]
 requires = ["poetry-core"]

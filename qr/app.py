@@ -1,22 +1,23 @@
 # -*- coding: utf-8 -*-
 import os
-import qrcode
+from typing import Any, Final
+
+from tkinter import *
+from tkinter import messagebox, ttk
+from tkinter.filedialog import askopenfilename, askdirectory
+
 from PIL import Image as imagen, ImageTk as imagenTk
 from pyzbar.pyzbar import decode
-from tkinter import *
-from tkinter import messagebox
-from tkinter import ttk
-from tkinter.filedialog import askopenfilename
-from tkinter.filedialog import askdirectory
+import qrcode
 
 
 PNG = ".png"
-correction_dict = {
+correction_dict: Final[dict[str, Any]]  = {
     'L7%': qrcode.constants.ERROR_CORRECT_L,
     'M15%': qrcode.constants.ERROR_CORRECT_M,
     'Q25%': qrcode.constants.ERROR_CORRECT_Q,
     'H30%': qrcode.constants.ERROR_CORRECT_H}
-color_choose = {
+color_choose: Final[dict[str, list[str]]] = {
     'Blanco&Negro': ['white', 'black'],
     'Blanco&Azul': ['white', 'blue'],
     'Blanco&Rojo': ['white', 'red'],
@@ -25,8 +26,8 @@ color_choose = {
     'Amarillo&Rojo': ['yellow', 'red'],
     'Blanco&Verde': ['white', 'green'],
     'Amarillo&Verde': ['yellow', 'green']}
-OUTPUT_DIR = ''
-FILE_NAME = 'qrcode.png'
+OUTPUT_DIR: Final[str] = ''
+file_name = 'qrcode.png'
 
 root = Tk()
 root.title('Codificador y decodificador de QR')
@@ -39,7 +40,7 @@ frame_1.pack()
 
 
 # ---------------- Init func ------------------
-def create_qr_image(qr_file_name):
+def create_qr_image(qr_file_name: str) -> None:
     global selected_image
     global photo_image
     global photo
@@ -54,16 +55,14 @@ def create_qr_image(qr_file_name):
     photo.grid(row=0, column=0, padx=10, pady=10)
 
 
-def create_qr(file_name, msg, data_capacity, correct_lvl,
+def create_qr(qr_file_name, msg, data_capacity, correct_lvl,
               selected_color, selected_color_2):
     qr = qrcode.QRCode(
         version=data_capacity,
-        # Porcentaje de error L 7%, M 15%, Q 25%, H 30%
+        # error percentage L 7%, M 15%, Q 25%, H 30%
         error_correction=correct_lvl,
-        # Se elige el tamaño del array o pixeles por fila y columna
+        # choose array size or pixels per row and column
         box_size=5,
-        # Se elige el tamaño entre el borde de la ventana
-        # y el codigo QR generado
         border=4,
     )
 
@@ -72,7 +71,7 @@ def create_qr(file_name, msg, data_capacity, correct_lvl,
 
     imag = qr.make_image(fill_color=selected_color,
                          back_color=selected_color_2)
-    imag.save(file_name)
+    imag.save(qr_file_name)
 
 
 def exit_app():
@@ -98,55 +97,49 @@ def validate_input(input_arg, default_value):
         return input_arg
 
 
-def qr_create():
-    global OUTPUT_DIR
-    global FILE_NAME
-    OUTPUT_DIR = select_dir()
-    qr_file_name = validate_input(file_name_var.get(), "qrcode.png")
+def qr_create() -> None:
+    selected_dir = select_dir()
+    directory = selected_dir if selected_dir else OUTPUT_DIR
+    file_name = validate_input(file_name_var.get(), "qrcode.png")
     msg = validate_input(txt_msg.get('1.0', END), "testing 123@789?")
     data_capacity = validate_input(data_capacity_dd.get(), "1")
     correct_lvl = validate_input(correct_lvl_dd.get(), "L7%")
     new_color = validate_input(color_change_dd.get(), "Blanco&Negro")
-    if PNG in qr_file_name:
-        FILE_NAME = OUTPUT_DIR + qr_file_name
+    if PNG in file_name:
+        file_name = directory + file_name
     else:
-        FILE_NAME = OUTPUT_DIR + qr_file_name + PNG
+        file_name = directory + file_name + PNG
 
-    create_qr(FILE_NAME, msg, data_capacity,
+    create_qr(file_name, msg, data_capacity,
               correction_dict[correct_lvl],
               color_choose[new_color][1],
               color_choose[new_color][0])
-    create_qr_image(FILE_NAME)
+    create_qr_image(file_name)
 
-    messagebox.showinfo("Registro QR", "QR generado con éxito: " + FILE_NAME)
+    messagebox.showinfo("Registro QR", f"QR generado con éxito: {file_name}")
 
 
-def select_dir():
+def select_dir() -> str:
     tmp_dir = askdirectory()
     if tmp_dir:
         return tmp_dir + os.path.sep
-    else:
-        return ''
+    return ''
 
 
-def load_qr_file():
-    global FILE_NAME
-
+def load_qr_file() -> None:
     # Tk().withdraw()
     # we don't want a full GUI, so keep the root
     # window from appearing
     # show an "Open" dialog box and return the path to the selected file
-    tmp_file_name = askopenfilename(filetypes=(
+    file_name = askopenfilename(filetypes=(
         ('imagenes', '*.png'), ('todos', '*.*')))
-    FILE_NAME = tmp_file_name
-    if FILE_NAME:
-        create_qr_image(FILE_NAME)
-        messagebox.showinfo(
-            "Registro QR", "Archivo cargado con éxito: " + tmp_file_name)
+    create_qr_image(file_name)
+    messagebox.showinfo(
+            "Registro QR", "Archivo cargado con éxito: " + file_name)
 
 
-def qr_read():
-    imag = imagen.open(FILE_NAME)
+def qr_read() -> None:
+    imag = imagen.open(file_name)
     result = decode(imag)
     decoded = ''
     for i in result:
@@ -154,7 +147,7 @@ def qr_read():
 
     txt_comment.delete(1.0, END)
     txt_comment.insert(1.0, decoded)
-    messagebox.showinfo("Registro QR", "Archivo leido con éxito: " + FILE_NAME)
+    messagebox.showinfo("Registro QR", f"Archivo leido con éxito: {file_name}")
 
 
 # ---------------- Menu bar ------------------
@@ -262,8 +255,8 @@ txt_comment.config(yscrollcommand=y_scroll.set)
 
 # ---------------- Init Values ------------------
 
-create_qr(FILE_NAME, "testing 123@789?", 1,
+create_qr(file_name, "testing 123@789?", 1,
           qrcode.constants.ERROR_CORRECT_L, 'black', 'white')
-create_qr_image(FILE_NAME)
+create_qr_image(file_name)
 
 root.mainloop()
