@@ -1,16 +1,17 @@
 {
-    "python.analysis.extraPaths": ["${workspaceFolder}/.venv/lib"],
+    "editor.formatOnSave": true,
+
+    "[python]": {
+        // Look for formatters in system/Poetry path
+        "editor.defaultFormatter": "ms-python.python",
+        "editor.formatOnSaveMode": "file"
+    },
+
+    "pylint.args": [
+        "--rcfile=${workspaceFolder}/.pylintrc"
+    ],
     "pylint.ignorePatterns": [
         ".vscode/*.py",
         "**/site-packages/**/*.py"
-    ],
-    "python.linting.pylintEnabled": true,
-    "python.linting.enabled": true,
-    "python.linting.pycodestyleEnabled": true,
-    "python.linting.ignorePatterns": [
-        ".vscode/*.py",
-        "**/site-packages/**/*.py"
-    ],
-    "python.formatting.provider": "autopep8",
-    "editor.formatOnSave": true
+    ]
 }

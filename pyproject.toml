@@ -1,21 +1,26 @@
-[tool.poetry]
+[project]
 name = "qr-app"
 version = "0.1.0"
 description = ""
-authors = ["gal16v8d"]
+authors = [
+    { name = "gal16v8d" }
+]
 readme = "README.md"
+requires-python = ">=3.14,<3.15"
 
-[tool.poetry.dependencies]
-python = "^3.13"
-tk = "^0.1.0"
-pyzbar = "^0.1.9"
-qrcode = "^7.4.2"
-pillow = "^12.1.1"
+dependencies = [
+    "tk>=0.1.0",
+    "pyzbar==0.1.9",
+    "qrcode>=8.1.0",
+    "pillow>=12.2.0"
+]
 
-[tool.poetry.group.dev.dependencies]
-pylint = "^3.3.7"
-black = "^25.1.0"
+[dependency-groups]
+dev = [
+    "pylint>=4.0.5",
+    "black>=26.3.1"
+]
 
 [build-system]
-requires = ["poetry-core"]
+requires = ["poetry-core>=2.0"]
 build-backend = "poetry.core.masonry.api"
