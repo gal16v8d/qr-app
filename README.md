@@ -52,10 +52,6 @@ Remove a dependency you don't need:
 poetry remove lib_here
 ```
 
-```bash
-poetry remove lib_here
-```
-
 Audit/Scan for vulnerabilities
 
 Install audit plugin (if required)
